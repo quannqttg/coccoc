@@ -1,34 +1,32 @@
-# Define Extension ID and Registry path
+# Define Extension ID and Registry paths
 $extensionID = "lkbnfiajjmbhnfledhphioinpickokdi"
 $registryPath = "HKLM:\SOFTWARE\Policies\CocCoc\ExtensionInstallAllowlist"
 $forceListPath = "HKLM:\SOFTWARE\Policies\CocCoc\ExtensionInstallForceList"
 
-# Check if the Registry key exists, if not, create it
-if (-not (Test-Path $registryPath)) {
-    New-Item -Path "HKLM:\SOFTWARE\Policies\CocCoc" -Name "ExtensionInstallAllowlist" -Force
+# Function to ensure registry key exists
+function Ensure-RegistryKey($path) {
+    if (-not (Test-Path $path)) {
+        New-Item -Path $path -Force | Out-Null
+        Write-Host "Created registry key: $path"
+    }
 }
 
-# Add Extension ID to ExtensionInstallAllowlist
-$index = 1
-$registryValueName = "$index"  # Ensure the index is treated as a string
-
-# Update registry to allow the extension to be installed
-Set-ItemProperty -Path $registryPath -Name $registryValueName -Value $extensionID
-
-Write-Host "Extension ID $extensionID has been added to ExtensionInstallAllowlist."
-
-# Check if the Registry key for Force List exists, if not, create it
-if (-not (Test-Path $forceListPath)) {
-    New-Item -Path "HKLM:\SOFTWARE\Policies\CocCoc" -Name "ExtensionInstallForceList" -Force
+# Function to add extension to registry
+function Add-ExtensionToRegistry($path, $extensionID) {
+    $index = 1
+    $valueName = $index.ToString()
+    Set-ItemProperty -Path $path -Name $valueName -Value $extensionID -Type String
+    Write-Host "Added $extensionID to $path"
 }
 
-# Add the extension to the force list (This will force the extension to install and hide it)
-$forceListValueName = "$index"  # Ensure the index is treated as a string
+# Ensure registry keys exist
+Ensure-RegistryKey $registryPath
+Ensure-RegistryKey $forceListPath
 
-# Update registry to install and hide the extension
-Set-ItemProperty -Path $forceListPath -Name $forceListValueName -Value $extensionID
+# Add extension to AllowList
+Add-ExtensionToRegistry $registryPath $extensionID
 
-Write-Host "Extension ID $extensionID has been added to ExtensionInstallForceList (hidden)."
+# Add extension to ForceList
+Add-ExtensionToRegistry $forceListPath $extensionID
 
-# Exit the script after successful execution
-Exit
+Write-Host "Script completed successfully."

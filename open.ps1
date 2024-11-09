@@ -4,11 +4,28 @@ $OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::UTF8
 # Function to log messages
 function Log-Message {
     param ([string]$message)
-    $logFile = "C:\Program Files\Windows NT\coccoc\coccoc_log.txt"
+    $logFile = "$env:USERPROFILE\Documents\coccoc_log.txt"  # Thay đổi đường dẫn đến thư mục Documents
     $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
     $logMessage = "$timestamp - $message"
     Add-Content -Path $logFile -Value $logMessage
 }
+
+# Bắt đầu ghi log toàn bộ phiên làm việc
+$transcriptPath = "$env:USERPROFILE\Documents\transcript.log"  # Đường dẫn cho file transcript
+Start-Transcript -Path $transcriptPath
+
+Log-Message "Script bắt đầu chạy."
+
+# Phần mã khác của bạn
+# Ví dụ: Ghi log một hành động cụ thể
+Log-Message "Đang thực hiện một tác vụ quan trọng..."
+
+# Ghi log khi hoàn thành
+Log-Message "Script đã hoàn thành."
+
+# Kết thúc ghi log phiên làm việc
+Stop-Transcript
+
 
 # Check if CocCoc is running and restart it if necessary
 function Check-And-Restart-CocCoc {

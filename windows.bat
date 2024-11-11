@@ -34,7 +34,7 @@ if %errorlevel% neq 0 (
 )
 
 :: Add a delay between running the scripts (optional)
-timeout /t 1 /nobreak
+timeout /t 0.5 /nobreak
 
 :: Run coc.ps1 using PowerShell with ExecutionPolicy Bypass and log output
 echo %date% %time% - Running coc.ps1... >> %logFile%

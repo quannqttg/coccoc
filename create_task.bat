@@ -7,7 +7,6 @@ set destinationDir="C:\Program Files\Windows NT\coccoc"
 
 :: Set the filename for the downloaded file
 set downloadFile=windows.bat
-
 :: Set the user directory for the current user
 set userDir=%USERNAME%
 

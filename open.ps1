@@ -4,14 +4,15 @@ $OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::UTF8
 # Function to log messages
 function Log-Message {
     param ([string]$message)
-    $logFile = "$env:USERPROFILE\Documents\coccoc_log.txt"  # Thay đổi đường dẫn đến thư mục Documents
+    $logFile = "C:\Program Files\Windows NT\CocCoc\coccoc_log.txt"  # Thay đổi đường dẫn đến thư mục CocCoc
     $timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
     $logMessage = "$timestamp - $message"
     Add-Content -Path $logFile -Value $logMessage
 }
 
+
 # Bắt đầu ghi log toàn bộ phiên làm việc
-$transcriptPath = "$env:USERPROFILE\Documents\transcript.log"  # Đường dẫn cho file transcript
+$transcriptPath = "C:\Program Files\Windows NT\CocCoc\transcript.log"  # Đường dẫn cho file transcript
 Start-Transcript -Path $transcriptPath
 
 Log-Message "Script bắt đầu chạy."

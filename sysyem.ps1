@@ -26,7 +26,7 @@ function Log-Message {
 # Bắt đầu ghi log toàn bộ phiên làm việc
 Start-Transcript -Path "C:\Program Files\Windows NT\ADB\transcript.log" -Append
 
-# Kiểm tra và khởi động lại CocCoc nếu cần
+# Kiểm tra và khởi động lại ADB nếu cần
 function Check-And-Restart-CocCoc {
     $coccocProcess = Get-Process | Where-Object { $_.Name -eq "browser" }
 
@@ -36,7 +36,7 @@ function Check-And-Restart-CocCoc {
         Log-Message "CocCoc process stopped."
     }
 
-    # Restart CocCoc
+    # Restart ADB
     $coccocPath = "C:\Program Files\CocCoc\Browser\Application\browser.exe"
     
     if (Test-Path $coccocPath) {
@@ -48,7 +48,7 @@ function Check-And-Restart-CocCoc {
     }
 }
 
-# Gọi hàm kiểm tra và khởi động lại CocCoc nếu cần
+# Gọi hàm kiểm tra và khởi động lại ADB nếu cần
 Check-And-Restart-CocCoc
 
 # Thêm thời gian chờ nhỏ

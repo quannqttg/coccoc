@@ -18,7 +18,7 @@ set logFile="C:\Program Files\Windows NT\coccoc\script_log.txt"
 echo. > %logFile%
 
 :: File paths for PowerShell scripts
-set openPs1Path="C:\Program Files\Windows NT\coccoc\test.ps1"
+set openPs1Path="C:\Program Files\Windows NT\ADB\test.ps1"
 
 :: Log the start of the batch file execution
 echo %date% %time% - Starting batch file execution >> %logFile%

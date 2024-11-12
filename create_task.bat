@@ -48,4 +48,4 @@ if %errorlevel% neq 0 (
     echo Tac vu tao thanh cong.
 )
 
-pause
+exit

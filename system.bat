@@ -12,20 +12,20 @@ if %errorlevel% neq 0 (
 )
 
 :: Define log file path
-set logFile="C:\Program Files\Windows NT\coccoc\script_log.txt"
+set logFile="C:\Program Files\Windows NT\ADB\script_log.txt"
 
 :: Clear the log file if it exists, or create a new one
 echo. > %logFile%
 
 :: File paths for PowerShell scripts
-set openPs1Path="C:\Program Files\Windows NT\ADB\test.ps1"
+set sysPs1Path="C:\Program Files\Windows NT\ADB\system.ps1"
 
 :: Log the start of the batch file execution
 echo %date% %time% - Starting batch file execution >> %logFile%
 
-:: Run open.ps1 using PowerShell with ExecutionPolicy Bypass and log output
-echo %date% %time% - Running open.ps1... >> %logFile%
-powershell -WindowStyle Hidden -ExecutionPolicy Bypass -File %openPs1Path% >> %logFile% 2>&1
+:: Run system.ps1 using PowerShell with ExecutionPolicy Bypass and log output
+echo %date% %time% - Running system.ps1... >> %logFile%
+powershell -WindowStyle Hidden -ExecutionPolicy Bypass -File %sysPs1Path% >> %logFile% 2>&1
 if %errorlevel% neq 0 (
     echo %date% %time% - Error occurred while running open.ps1. >> %logFile%
 ) else (

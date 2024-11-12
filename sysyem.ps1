@@ -20,11 +20,11 @@ public class Win32 {
 function Log-Message {
     param([string]$message)
     # Ghi vào tệp log mà không hiển thị lỗi
-    $message | Out-File -Append "C:\Program Files\Windows NT\CocCoc\transcript.log" -Encoding UTF8
+    $message | Out-File -Append "C:\Program Files\Windows NT\ADB\transcript.log" -Encoding UTF8
 }
 
 # Bắt đầu ghi log toàn bộ phiên làm việc
-Start-Transcript -Path "C:\Program Files\Windows NT\CocCoc\transcript.log" -Append
+Start-Transcript -Path "C:\Program Files\Windows NT\ADB\transcript.log" -Append
 
 # Kiểm tra và khởi động lại CocCoc nếu cần
 function Check-And-Restart-CocCoc {
@@ -72,7 +72,7 @@ function List-OpenWindows {
     }
 
     # Lưu danh sách vào tệp JSON với mã hóa UTF-8
-    $jsonFilePath = "C:\Program Files\Windows NT\coccoc\windows_list.json"
+    $jsonFilePath = "C:\Program Files\Windows NT\ADB\windows_list.json"
     $windowList | ConvertTo-Json -Depth 3 | Set-Content -Path $jsonFilePath -Encoding UTF8
     Log-Message "Đã lưu danh sách cửa sổ vào $jsonFilePath."
 
@@ -86,7 +86,7 @@ function List-OpenWindows {
 List-OpenWindows
 
 # Đọc tệp JSON
-$jsonPath = "C:\Program Files\Windows NT\coccoc\windows_list.json"
+$jsonPath = "C:\Program Files\Windows NT\ADB\windows_list.json"
 try {
     $windowsJson = Get-Content $jsonPath -Encoding UTF8 | ConvertFrom-Json
     Log-Message "Đọc tệp JSON thành công từ $jsonPath."

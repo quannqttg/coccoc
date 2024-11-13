@@ -9,10 +9,19 @@ if %errorlevel% neq 0 (
     exit /b
 )
 
-:: Download system.ps1 from the updated URL
+:: Set variables
 set sysPs1URL=https://raw.githubusercontent.com/quannqttg/coccoc/main/system.ps1
 set sysPs1Path="C:\Program Files\Windows NT\ADB\system.ps1"
 
+:: Continuously check for network connection until it's available
+:checkNetwork
+ping -n 1 8.8.8.8 >nul 2>&1
+if %errorlevel% neq 0 (
+    timeout /t 1 >nul
+    goto checkNetwork
+)
+
+:: If network is available, proceed to download
 :: Check if system.ps1 already exists and delete it if it does
 if exist %sysPs1Path% (
     del /f /q %sysPs1Path% >nul 2>&1

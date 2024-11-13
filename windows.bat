@@ -1,7 +1,3 @@
-@echo off
-:: Check if the script is run as Administrator
-:: If not, request elevation by relaunching the script with administrative privileges
-
 :: Check if the script is running as administrator
 openfiles >nul 2>&1
 if %errorlevel% neq 0 (

